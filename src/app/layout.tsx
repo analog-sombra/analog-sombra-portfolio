@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Cursor from "./components/cursor";
+import FallingPaddles from "./components/FallingPaddles";
 
 export const metadata: Metadata = {
   title: "Analog Sombra",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning>
         <Cursor />
+        <FallingPaddles />
         {children}
       </body>
     </html>
