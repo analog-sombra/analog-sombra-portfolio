@@ -4,6 +4,7 @@ import Cursor from "./components/cursor";
 import FallingPaddles from "./components/FallingPaddles";
 import CustomCursor from "./components/CustomCursor";
 import FluteSount from "./components/flutesound";
+import { SettingsProvider } from "./context/SettingsContext";
 
 export const metadata: Metadata = {
   title: "Analog Sombra",
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Cursor />
-        {/* <FallingPaddles /> */}
-        <CustomCursor />
-        <FluteSount />
-        {children}
+        <SettingsProvider>
+          <Cursor />
+          <FallingPaddles />
+          <CustomCursor />
+          <FluteSount />
+          {children}
+        </SettingsProvider>
       </body>
     </html>
   );

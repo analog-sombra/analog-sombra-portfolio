@@ -110,17 +110,47 @@ const Cursor = () => {
       const speed = distance / timeDelta;
       const pressure = Math.min(1, Math.max(0.3, 1 - speed * 0.5)); // Slower = more pressure
 
-      if (distance > 2) {
-        strokesRef.current.push({
-          x1: prevPointerRef.current.x,
-          y1: prevPointerRef.current.y,
-          x2: pointerRef.current.x,
-          y2: pointerRef.current.y,
-          color: crayonColors[currentColorIndex],
-          timestamp: currentTime,
-          speed: speed,
-          pressure: pressure,
-        });
+      if (distance > 0.5) {
+        // Interpolate points for fast movements to prevent gaps
+        const maxSegmentLength = 3; // Smaller segments for smoother lines
+        
+        if (distance > maxSegmentLength) {
+          // Need to interpolate - create multiple small segments
+          const numSegments = Math.ceil(distance / maxSegmentLength);
+          
+          for (let i = 0; i < numSegments; i++) {
+            const t1 = i / numSegments;
+            const t2 = (i + 1) / numSegments;
+            
+            const x1 = prevPointerRef.current.x + dx * t1;
+            const y1 = prevPointerRef.current.y + dy * t1;
+            const x2 = prevPointerRef.current.x + dx * t2;
+            const y2 = prevPointerRef.current.y + dy * t2;
+            
+            strokesRef.current.push({
+              x1: x1,
+              y1: y1,
+              x2: x2,
+              y2: y2,
+              color: crayonColors[currentColorIndex],
+              timestamp: currentTime,
+              speed: speed,
+              pressure: pressure,
+            });
+          }
+        } else {
+          // Normal stroke
+          strokesRef.current.push({
+            x1: prevPointerRef.current.x,
+            y1: prevPointerRef.current.y,
+            x2: pointerRef.current.x,
+            y2: pointerRef.current.y,
+            color: crayonColors[currentColorIndex],
+            timestamp: currentTime,
+            speed: speed,
+            pressure: pressure,
+          });
+        }
       }
       
       lastTime = currentTime;

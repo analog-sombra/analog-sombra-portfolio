@@ -2,13 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { useSettings } from "../context/SettingsContext";
 
 export default function FallingPaddles() {
+  const { isRainOn } = useSettings();
   const containerRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !isRainOn) return;
 
     const container = containerRef.current;
     const totalPaddles = 56; // Total unique paddle images
@@ -218,7 +220,9 @@ export default function FallingPaddles() {
       window.removeEventListener("mousemove", handleMouseMove);
       paddleElements.forEach((paddle) => paddle.remove());
     };
-  }, []);
+  }, [isRainOn]);
+
+  if (!isRainOn) return null;
 
   return (
     <div
