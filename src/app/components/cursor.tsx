@@ -2,6 +2,17 @@
 
 import { useEffect, useRef } from "react";
 
+interface Stroke {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  color: string;
+  timestamp: number;
+  speed: number;
+  pressure: number;
+}
+
 const Cursor = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseMovedRef = useRef(false);
@@ -9,9 +20,11 @@ const Cursor = () => {
     x: 0.5 * (typeof window !== "undefined" ? window.innerWidth : 0),
     y: 0.5 * (typeof window !== "undefined" ? window.innerHeight : 0),
   });
-  const trailRef = useRef<
-    Array<{ x: number; y: number; dx: number; dy: number }>
-  >([]);
+  const prevPointerRef = useRef({
+    x: 0.5 * (typeof window !== "undefined" ? window.innerWidth : 0),
+    y: 0.5 * (typeof window !== "undefined" ? window.innerHeight : 0),
+  });
+  const strokesRef = useRef<Stroke[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -20,38 +33,42 @@ const Cursor = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const params = {
-      pointsNumber: 40,
-      widthFactor: 0.3,
-      mouseThreshold: 0.6,
-      spring: 0.4,
-      friction: 0.5,
-    };
+    const STROKE_LIFETIME = 4000; // 4 seconds before marks disappear
+
+    // Crayon colors array for variety with more realistic tones
+    const crayonColors = [
+      "#E05735", // red-orange
+      "#FF6B6B", // coral
+      "#4ECDC4", // turquoise
+      "#FFE66D", // yellow
+      "#A8E6CF", // mint
+      "#FF8B94", // pink
+    ];
+    let currentColorIndex = 0;
+    let lastTime = Date.now();
 
     // Initialize pointer
     pointerRef.current = {
       x: 0.5 * window.innerWidth,
       y: 0.5 * window.innerHeight,
     };
-
-    // Initialize trail
-    trailRef.current = new Array(params.pointsNumber);
-    for (let i = 0; i < params.pointsNumber; i++) {
-      trailRef.current[i] = {
-        x: pointerRef.current.x,
-        y: pointerRef.current.y,
-        dx: 0,
-        dy: 0,
-      };
-    }
+    
+    prevPointerRef.current = {
+      x: 0.5 * window.innerWidth,
+      y: 0.5 * window.innerHeight,
+    };
 
     const updateMousePosition = (eX: number, eY: number) => {
+      prevPointerRef.current.x = pointerRef.current.x;
+      prevPointerRef.current.y = pointerRef.current.y;
       pointerRef.current.x = eX;
       pointerRef.current.y = eY;
     };
 
     const handleClick = (e: MouseEvent) => {
       updateMousePosition(e.clientX, e.clientY);
+      // Change color on click
+      currentColorIndex = (currentColorIndex + 1) % crayonColors.length;
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -73,47 +90,98 @@ const Cursor = () => {
     };
 
     const update = (t: number) => {
-      // For intro motion
-      if (!mouseMovedRef.current) {
-        pointerRef.current.x =
-          (0.5 + 0.3 * Math.cos(0.002 * t) * Math.sin(0.005 * t)) *
-          window.innerWidth;
-        pointerRef.current.y =
-          (0.5 + 0.2 * Math.cos(0.005 * t) + 0.1 * Math.cos(0.01 * t)) *
-          window.innerHeight;
-      }
+      const currentTime = Date.now();
+      
+      // Remove old strokes
+      strokesRef.current = strokesRef.current.filter(
+        stroke => currentTime - stroke.timestamp < STROKE_LIFETIME
+      );
 
+      // Clear canvas completely (transparent)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      trailRef.current.forEach((p, pIdx) => {
-        const prev =
-          pIdx === 0 ? pointerRef.current : trailRef.current[pIdx - 1];
-        const spring = pIdx === 0 ? 0.4 * params.spring : params.spring;
-        p.dx += (prev.x - p.x) * spring;
-        p.dy += (prev.y - p.y) * spring;
-        p.dx *= params.friction;
-        p.dy *= params.friction;
-        p.x += p.dx;
-        p.y += p.dy;
-      });
+      // Only add new stroke if mouse has moved
+      const dx = pointerRef.current.x - prevPointerRef.current.x;
+      const dy = pointerRef.current.y - prevPointerRef.current.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Calculate speed and pressure
+      const timeDelta = Math.max(currentTime - lastTime, 1);
+      const speed = distance / timeDelta;
+      const pressure = Math.min(1, Math.max(0.3, 1 - speed * 0.5)); // Slower = more pressure
 
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#E05735";
-      ctx.beginPath();
-      ctx.moveTo(trailRef.current[0].x, trailRef.current[0].y);
-
-      for (let i = 1; i < trailRef.current.length - 1; i++) {
-        const xc = 0.5 * (trailRef.current[i].x + trailRef.current[i + 1].x);
-        const yc = 0.5 * (trailRef.current[i].y + trailRef.current[i + 1].y);
-        ctx.quadraticCurveTo(trailRef.current[i].x, trailRef.current[i].y, xc, yc);
-        ctx.lineWidth = params.widthFactor * (params.pointsNumber - i);
-        ctx.stroke();
+      if (distance > 2) {
+        strokesRef.current.push({
+          x1: prevPointerRef.current.x,
+          y1: prevPointerRef.current.y,
+          x2: pointerRef.current.x,
+          y2: pointerRef.current.y,
+          color: crayonColors[currentColorIndex],
+          timestamp: currentTime,
+          speed: speed,
+          pressure: pressure,
+        });
       }
-      ctx.lineTo(
-        trailRef.current[trailRef.current.length - 1].x,
-        trailRef.current[trailRef.current.length - 1].y
-      );
-      ctx.stroke();
+      
+      lastTime = currentTime;
+
+      // Redraw all active strokes with realistic paper texture
+      strokesRef.current.forEach(stroke => {
+        const age = currentTime - stroke.timestamp;
+        const fadeProgress = age / STROKE_LIFETIME;
+        const baseOpacity = 1 - (fadeProgress * 0.5); // More gradual fade
+        
+        // Base width varies with pressure (slower = thicker)
+        const baseWidth = 4 + (stroke.pressure * 8);
+        
+        // Draw multiple layers for realistic crayon texture
+        const numStrokes = 5;
+        
+        for (let strokeNum = 0; strokeNum < numStrokes; strokeNum++) {
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          
+          // Vary opacity for grainy crayon texture
+          const layerOpacity = (0.12 + (strokeNum * 0.08)) * baseOpacity * stroke.pressure;
+          ctx.strokeStyle = stroke.color + Math.floor(layerOpacity * 255).toString(16).padStart(2, '0');
+          
+          // Consistent offset based on timestamp and stroke number
+          const seed = stroke.timestamp + strokeNum * 137; // Prime number for better distribution
+          const offsetX = Math.sin(seed * 0.0003) * 2.5;
+          const offsetY = Math.cos(seed * 0.0003) * 2.5;
+          
+          // Add paper grain effect
+          const grainX = Math.sin(seed * 0.01) * 0.8;
+          const grainY = Math.cos(seed * 0.01) * 0.8;
+          
+          ctx.beginPath();
+          ctx.moveTo(stroke.x1 + offsetX + grainX, stroke.y1 + offsetY + grainY);
+          
+          // Slight wobble for hand-drawn feel
+          const wobbleX = Math.sin(seed * 0.002) * 1.2 * stroke.pressure;
+          const wobbleY = Math.cos(seed * 0.002) * 1.2 * stroke.pressure;
+          
+          ctx.lineTo(
+            stroke.x2 + offsetX + wobbleX + grainX,
+            stroke.y2 + offsetY + wobbleY + grainY
+          );
+          
+          // Vary width per layer for texture
+          ctx.lineWidth = baseWidth + (strokeNum * 0.8);
+          ctx.stroke();
+        }
+        
+        // Add highlight layer for wax sheen effect
+        if (stroke.pressure > 0.6) {
+          const highlightOpacity = 0.05 * baseOpacity * stroke.pressure;
+          ctx.strokeStyle = '#FFFFFF' + Math.floor(highlightOpacity * 255).toString(16).padStart(2, '0');
+          ctx.lineWidth = baseWidth * 0.6;
+          ctx.beginPath();
+          ctx.moveTo(stroke.x1, stroke.y1);
+          ctx.lineTo(stroke.x2, stroke.y2);
+          ctx.stroke();
+        }
+      });
 
       requestAnimationFrame(update);
     };

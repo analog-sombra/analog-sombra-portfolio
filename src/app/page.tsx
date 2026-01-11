@@ -9,8 +9,8 @@ export default function Page() {
     <div className="w-full bg-[#FDF2D8] min-h-screen font-mono">
   
       <NavBar />
-      {/* <Home /> */}
-      <About />
+      <Home />
+      {/* <About /> */}
 
       
       
