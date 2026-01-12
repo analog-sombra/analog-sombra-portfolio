@@ -6,6 +6,7 @@ interface SettingsContextType {
   isRainOn: boolean;
   isDrawOn: boolean;
   showFluteComponent: boolean;
+  showPaintEffect: boolean;
   toggleFluteComponent: () => void;
   toggleRain: () => void;
   toggleDraw: () => void;
@@ -17,10 +18,15 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const [isRainOn, setIsRainOn] = useState(true);
   const [isDrawOn, setIsDrawOn] = useState(false);
   const [showFluteComponent, setShowFluteComponent] = useState(true);
+  const [showPaintEffect, setShowPaintEffect] = useState(false);
 
   const toggleFluteComponent = () => setShowFluteComponent((prev) => !prev);
   const toggleRain = () => setIsRainOn((prev) => !prev);
-  const toggleDraw = () => setIsDrawOn((prev) => !prev);
+  const toggleDraw = () => {
+    const newValue = !isDrawOn;
+    setIsDrawOn(newValue);
+    setShowPaintEffect(newValue);
+  };
 
   return (
     <SettingsContext.Provider
@@ -28,6 +34,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         isRainOn,
         isDrawOn,
         showFluteComponent,
+        showPaintEffect,
         toggleFluteComponent,
         toggleRain,
         toggleDraw,

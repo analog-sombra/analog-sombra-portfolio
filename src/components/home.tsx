@@ -6,7 +6,8 @@ import gsap from "gsap";
 import { useSettings } from "../context/SettingsContext";
 
 const Home = () => {
-  const { showFluteComponent, isRainOn, toggleFluteComponent, toggleRain } = useSettings();
+  const { showFluteComponent, isRainOn, isDrawOn, toggleFluteComponent, toggleRain, toggleDraw } =
+    useSettings();
   const readMoreRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<(HTMLParagraphElement | null)[]>([]);
   const dot1Ref = useRef<HTMLSpanElement>(null);
@@ -14,17 +15,6 @@ const Home = () => {
   const dot3Ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // Read More button pulse animation
-    if (readMoreRef.current) {
-      gsap.to(readMoreRef.current, {
-        scale: 1.05,
-        duration: 0.8,
-        ease: "power1.inOut",
-        repeat: -1,
-        yoyo: true,
-      });
-    }
-
     // Animate dots in sequence
     const timeline = gsap.timeline({ repeat: -1 });
     timeline
@@ -119,7 +109,10 @@ const Home = () => {
 
           <div className="flex w-full">
             <div className="grow"></div>
-            <button ref={readMoreRef} className="cursor-pointer font-bold">
+            <button
+              ref={readMoreRef}
+              className="cursor-pointer font-semibold text-[#E05735] text-lg "
+            >
               Read More
               <span ref={dot1Ref} className="inline-block">
                 .
@@ -207,9 +200,9 @@ const Home = () => {
 
           <div className="flex gap-3 items-center mb-3">
             <label className="relative inline-block w-11 h-6">
-              <input 
-                type="checkbox" 
-                className="opacity-0 w-0 h-0 peer" 
+              <input
+                type="checkbox"
+                className="opacity-0 w-0 h-0 peer"
                 checked={showFluteComponent}
                 onChange={toggleFluteComponent}
               />
@@ -220,9 +213,9 @@ const Home = () => {
 
           <div className="flex gap-3 items-center mb-3">
             <label className="relative inline-block w-11 h-6">
-              <input 
-                type="checkbox" 
-                className="opacity-0 w-0 h-0 peer" 
+              <input
+                type="checkbox"
+                className="opacity-0 w-0 h-0 peer"
                 checked={isRainOn}
                 onChange={toggleRain}
               />
@@ -233,7 +226,12 @@ const Home = () => {
 
           <div className="flex gap-3 items-center mb-2">
             <label className="relative inline-block w-11 h-6">
-              <input type="checkbox" className="opacity-0 w-0 h-0 peer" />
+              <input 
+                type="checkbox" 
+                className="opacity-0 w-0 h-0 peer" 
+                checked={isDrawOn}
+                onChange={toggleDraw}
+              />
               <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#C4B5A0] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-4.5 before:w-4.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#72906E] peer-checked:before:translate-x-5 peer-focus:shadow-[0_0_1px_#72906E]"></span>
             </label>
             <p className="text-[#373529] text-lg font-medium">Draw</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useSettings } from "../context/SettingsContext";
 
 interface Stroke {
   x1: number;
@@ -13,7 +14,8 @@ interface Stroke {
   pressure: number;
 }
 
-const Cursor = () => {
+const PaintEffect = () => {
+  const { showPaintEffect } = useSettings();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseMovedRef = useRef(false);
   const pointerRef = useRef({
@@ -25,13 +27,22 @@ const Cursor = () => {
     y: 0.5 * (typeof window !== "undefined" ? window.innerHeight : 0),
   });
   const strokesRef = useRef<Stroke[]>([]);
+  const isActiveRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !showPaintEffect) return;
+    
+    // Mark this instance as active
+    isActiveRef.current = true;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // Clear canvas and strokes when effect is enabled
+    strokesRef.current = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    mouseMovedRef.current = false;
 
     const STROKE_LIFETIME = 4000; // 4 seconds before marks disappear
 
@@ -52,7 +63,7 @@ const Cursor = () => {
       x: 0.5 * window.innerWidth,
       y: 0.5 * window.innerHeight,
     };
-    
+
     prevPointerRef.current = {
       x: 0.5 * window.innerWidth,
       y: 0.5 * window.innerHeight,
@@ -90,21 +101,25 @@ const Cursor = () => {
     };
 
     const update = (t: number) => {
-      const currentTime = Date.now();
+      // Stop if this instance is no longer active
+      if (!isActiveRef.current) return;
       
+      const currentTime = Date.now();
+
       // Remove old strokes
       strokesRef.current = strokesRef.current.filter(
-        stroke => currentTime - stroke.timestamp < STROKE_LIFETIME
+        (stroke) => currentTime - stroke.timestamp < STROKE_LIFETIME
       );
 
       // Clear canvas completely (transparent)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Only add new stroke if mouse has moved
-      const dx = pointerRef.current.x - prevPointerRef.current.x;
-      const dy = pointerRef.current.y - prevPointerRef.current.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
+      // Only add new stroke if mouse has moved AND mouseMovedRef is true
+      if (mouseMovedRef.current) {
+        const dx = pointerRef.current.x - prevPointerRef.current.x;
+        const dy = pointerRef.current.y - prevPointerRef.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
       // Calculate speed and pressure
       const timeDelta = Math.max(currentTime - lastTime, 1);
       const speed = distance / timeDelta;
@@ -113,20 +128,20 @@ const Cursor = () => {
       if (distance > 0.5) {
         // Interpolate points for fast movements to prevent gaps
         const maxSegmentLength = 3; // Smaller segments for smoother lines
-        
+
         if (distance > maxSegmentLength) {
           // Need to interpolate - create multiple small segments
           const numSegments = Math.ceil(distance / maxSegmentLength);
-          
+
           for (let i = 0; i < numSegments; i++) {
             const t1 = i / numSegments;
             const t2 = (i + 1) / numSegments;
-            
+
             const x1 = prevPointerRef.current.x + dx * t1;
             const y1 = prevPointerRef.current.y + dy * t1;
             const x2 = prevPointerRef.current.x + dx * t2;
             const y2 = prevPointerRef.current.y + dy * t2;
-            
+
             strokesRef.current.push({
               x1: x1,
               y1: y1,
@@ -152,59 +167,72 @@ const Cursor = () => {
           });
         }
       }
-      
+      }
+
       lastTime = currentTime;
 
       // Redraw all active strokes with realistic paper texture
-      strokesRef.current.forEach(stroke => {
+      strokesRef.current.forEach((stroke) => {
         const age = currentTime - stroke.timestamp;
         const fadeProgress = age / STROKE_LIFETIME;
-        const baseOpacity = 1 - (fadeProgress * 0.5); // More gradual fade
-        
+        const baseOpacity = 1 - fadeProgress * 0.5; // More gradual fade
+
         // Base width varies with pressure (slower = thicker)
-        const baseWidth = 4 + (stroke.pressure * 8);
-        
+        const baseWidth = 4 + stroke.pressure * 8;
+
         // Draw multiple layers for realistic crayon texture
         const numStrokes = 5;
-        
+
         for (let strokeNum = 0; strokeNum < numStrokes; strokeNum++) {
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
-          
+
           // Vary opacity for grainy crayon texture
-          const layerOpacity = (0.12 + (strokeNum * 0.08)) * baseOpacity * stroke.pressure;
-          ctx.strokeStyle = stroke.color + Math.floor(layerOpacity * 255).toString(16).padStart(2, '0');
-          
+          const layerOpacity =
+            (0.12 + strokeNum * 0.08) * baseOpacity * stroke.pressure;
+          ctx.strokeStyle =
+            stroke.color +
+            Math.floor(layerOpacity * 255)
+              .toString(16)
+              .padStart(2, "0");
+
           // Consistent offset based on timestamp and stroke number
           const seed = stroke.timestamp + strokeNum * 137; // Prime number for better distribution
           const offsetX = Math.sin(seed * 0.0003) * 2.5;
           const offsetY = Math.cos(seed * 0.0003) * 2.5;
-          
+
           // Add paper grain effect
           const grainX = Math.sin(seed * 0.01) * 0.8;
           const grainY = Math.cos(seed * 0.01) * 0.8;
-          
+
           ctx.beginPath();
-          ctx.moveTo(stroke.x1 + offsetX + grainX, stroke.y1 + offsetY + grainY);
-          
+          ctx.moveTo(
+            stroke.x1 + offsetX + grainX,
+            stroke.y1 + offsetY + grainY
+          );
+
           // Slight wobble for hand-drawn feel
           const wobbleX = Math.sin(seed * 0.002) * 1.2 * stroke.pressure;
           const wobbleY = Math.cos(seed * 0.002) * 1.2 * stroke.pressure;
-          
+
           ctx.lineTo(
             stroke.x2 + offsetX + wobbleX + grainX,
             stroke.y2 + offsetY + wobbleY + grainY
           );
-          
+
           // Vary width per layer for texture
-          ctx.lineWidth = baseWidth + (strokeNum * 0.8);
+          ctx.lineWidth = baseWidth + strokeNum * 0.8;
           ctx.stroke();
         }
-        
+
         // Add highlight layer for wax sheen effect
         if (stroke.pressure > 0.6) {
           const highlightOpacity = 0.05 * baseOpacity * stroke.pressure;
-          ctx.strokeStyle = '#FFFFFF' + Math.floor(highlightOpacity * 255).toString(16).padStart(2, '0');
+          ctx.strokeStyle =
+            "#FFFFFF" +
+            Math.floor(highlightOpacity * 255)
+              .toString(16)
+              .padStart(2, "0");
           ctx.lineWidth = baseWidth * 0.6;
           ctx.beginPath();
           ctx.moveTo(stroke.x1, stroke.y1);
@@ -225,13 +253,22 @@ const Cursor = () => {
     const animationFrame = requestAnimationFrame(update);
 
     return () => {
+      // Mark this instance as inactive to stop the animation loop
+      isActiveRef.current = false;
       window.removeEventListener("click", handleClick);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("resize", setupCanvas);
       cancelAnimationFrame(animationFrame);
+      // Clear canvas on cleanup
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      strokesRef.current = [];
     };
-  }, []);
+  }, [showPaintEffect]);
+
+  if (!showPaintEffect) {
+    return null;
+  }
 
   return (
     <canvas
@@ -240,4 +277,4 @@ const Cursor = () => {
     />
   );
 };
-export default Cursor;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+export default PaintEffect;

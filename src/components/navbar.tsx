@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 
 const NavBar = () => {
-  const [currentTime, setCurrentTime] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [currentTime, setCurrentTime] = useState<string>("Loading...");
 
   useEffect(() => {
-    setMounted(true);
     const updateTime = () => {
       const now = new Date();
       const formatted = now.toLocaleString("en-US", {
@@ -52,7 +50,7 @@ const NavBar = () => {
         </div>
         <div className="rounded-xl bg-[#72906E] col-span-3 flex items-center justify-center px-2 py-2">
           <p className="text-[#F3EACD] text-lg font-bold text-center">
-            {mounted ? currentTime : "Loading..."}
+            {currentTime}
           </p>
         </div>
       </nav>
