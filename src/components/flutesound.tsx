@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import FlyingMusicNotes from "./FlyingMusicNotes";
 import { useSettings } from "../context/SettingsContext";
 
 const FluteSound = () => {
-  const { isMusicOn, toggleMusic } = useSettings();
+  const { showFluteComponent } = useSettings();
+  const [isMusicOn, setIsMusicOn] = useState(true);
   const imageRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
@@ -16,7 +17,7 @@ const FluteSound = () => {
         opacity: 0,
         duration: 0.3,
         onComplete: () => {
-          toggleMusic();
+          setIsMusicOn((prev) => !prev);
           gsap.to(imageRef.current, {
             opacity: 1,
             duration: 0.3,
@@ -25,6 +26,10 @@ const FluteSound = () => {
       });
     }
   };
+
+  if (!showFluteComponent) {
+    return null;
+  }
 
   return (
     <>

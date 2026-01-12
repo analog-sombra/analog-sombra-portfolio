@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 interface FlyingMusicNotesProps {
@@ -11,6 +11,20 @@ export default function FlyingMusicNotes({ fluteOn }: FlyingMusicNotesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const activeNotes = useRef<Set<HTMLDivElement>>(new Set());
+  const [isDocumentVisible, setIsDocumentVisible] = useState(true);
+
+  // Handle document visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsDocumentVisible(!document.hidden);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -19,7 +33,8 @@ export default function FlyingMusicNotes({ fluteOn }: FlyingMusicNotesProps) {
     const totalMusicNotes = 5; // music1.png to music10.png
 
     const createMusicNote = () => {
-      if (!container || !fluteOn) return;
+      // Don't create notes if flute is off or document is not visible
+      if (!container || !fluteOn || !isDocumentVisible) return;
 
       const noteWrapper = document.createElement("div");
       noteWrapper.className = "absolute pointer-events-none";
@@ -128,8 +143,8 @@ export default function FlyingMusicNotes({ fluteOn }: FlyingMusicNotesProps) {
       );
     };
 
-    // Start creating notes when flute is on
-    if (fluteOn) {
+    // Start creating notes when flute is on AND document is visible
+    if (fluteOn && isDocumentVisible) {
       // Create notes at intervals
       intervalRef.current = setInterval(() => {
         createMusicNote();
@@ -138,7 +153,7 @@ export default function FlyingMusicNotes({ fluteOn }: FlyingMusicNotesProps) {
       // Create initial note immediately
       createMusicNote();
     } else {
-      // Clean up all existing notes when flute is turned off
+      // Clean up all existing notes when flute is turned off or document is hidden
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -171,7 +186,7 @@ export default function FlyingMusicNotes({ fluteOn }: FlyingMusicNotesProps) {
       });
       activeNotes.current.clear();
     };
-  }, [fluteOn]);
+  }, [fluteOn, isDocumentVisible]);
 
   return (
     <div

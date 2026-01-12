@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { useSettings } from "../context/SettingsContext";
 
 const Home = () => {
-  const { isMusicOn, isRainOn, toggleMusic, toggleRain } = useSettings();
+  const { showFluteComponent, isRainOn, toggleFluteComponent, toggleRain } = useSettings();
   const readMoreRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<(HTMLParagraphElement | null)[]>([]);
   const dot1Ref = useRef<HTMLSpanElement>(null);
@@ -210,8 +210,8 @@ const Home = () => {
               <input 
                 type="checkbox" 
                 className="opacity-0 w-0 h-0 peer" 
-                checked={isMusicOn}
-                onChange={toggleMusic}
+                checked={showFluteComponent}
+                onChange={toggleFluteComponent}
               />
               <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#C4B5A0] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-4.5 before:w-4.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#72906E] peer-checked:before:translate-x-5 peer-focus:shadow-[0_0_1px_#72906E]"></span>
             </label>

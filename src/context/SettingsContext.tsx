@@ -3,10 +3,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface SettingsContextType {
-  isMusicOn: boolean;
   isRainOn: boolean;
   isDrawOn: boolean;
-  toggleMusic: () => void;
+  showFluteComponent: boolean;
+  toggleFluteComponent: () => void;
   toggleRain: () => void;
   toggleDraw: () => void;
 }
@@ -14,21 +14,21 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [isMusicOn, setIsMusicOn] = useState(true);
   const [isRainOn, setIsRainOn] = useState(true);
   const [isDrawOn, setIsDrawOn] = useState(false);
+  const [showFluteComponent, setShowFluteComponent] = useState(true);
 
-  const toggleMusic = () => setIsMusicOn((prev) => !prev);
+  const toggleFluteComponent = () => setShowFluteComponent((prev) => !prev);
   const toggleRain = () => setIsRainOn((prev) => !prev);
   const toggleDraw = () => setIsDrawOn((prev) => !prev);
 
   return (
     <SettingsContext.Provider
       value={{
-        isMusicOn,
         isRainOn,
         isDrawOn,
-        toggleMusic,
+        showFluteComponent,
+        toggleFluteComponent,
         toggleRain,
         toggleDraw,
       }}
