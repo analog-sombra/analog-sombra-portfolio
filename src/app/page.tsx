@@ -1,7 +1,7 @@
 "use client";
-import About from "./components/about";
-import Home from "./components/home";
-import NavBar from "./components/navbar";
+import NavBar from "@/components/navbar";
+import About from "@/components/about";
+import Home from "@/components/home";
 
 export default function Page() {
   

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Cursor from "./components/cursor";
-import FallingPaddles from "./components/FallingPaddles";
-import CustomCursor from "./components/CustomCursor";
-import FluteSount from "./components/flutesound";
-import { SettingsProvider } from "./context/SettingsContext";
+
+import { SettingsProvider } from "../context/SettingsContext";
+import Cursor from "@/components/cursor";
+import FallingPaddles from "@/components/FallingPaddles";
+import CustomCursor from "@/components/CustomCursor";
+import FluteSound from "@/components/flutesound";
 
 export const metadata: Metadata = {
   title: "Analog Sombra",
@@ -23,7 +24,7 @@ export default function RootLayout({
           <Cursor />
           <FallingPaddles />
           <CustomCursor />
-          <FluteSount />
+          <FluteSound />
           {children}
         </SettingsProvider>
       </body>

@@ -137,7 +137,7 @@ const Home = () => {
 
       <div className="flex flex-col gap-2">
         <div className="border-2 rounded-xl border-[#72906E] p-2 h-fit">
-          <p className="text-4xl text-[#E05735] font-extrabold mb-4">Links</p>
+          <p className="text-xl text-[#E05735] font-extrabold mb-4">Links</p>
 
           <p
             ref={(el) => {
@@ -203,7 +203,7 @@ const Home = () => {
 
         {/* Settings Section */}
         <div className="border-2 rounded-xl border-[#72906E] p-2 h-fit">
-          <p className="text-4xl text-[#E05735] font-extrabold mb-4">Setting</p>
+          <p className="text-xl text-[#E05735] font-extrabold mb-4">Setting</p>
 
           <div className="flex gap-3 items-center mb-3">
             <label className="relative inline-block w-11 h-6">
