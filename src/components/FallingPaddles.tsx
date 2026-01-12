@@ -14,12 +14,43 @@ export default function FallingPaddles() {
 
     const container = containerRef.current;
     const totalPaddles = 56; // Total unique paddle images
-    const paddleCount = 80; // Number of falling paddles on screen
-    const paddleElements: HTMLDivElement[] = [];
+    
+    // Define three layers with different properties for parallax effect
+    const layers = [
+      { 
+        name: 'back',
+        count: 30,
+        scale: [0.15, 0.35], // Smaller paddles
+        duration: [16, 20], // Slower
+        opacity: [0.3, 0.5], // More transparent
+        zIndex: 10
+      },
+      { 
+        name: 'middle',
+        count: 30,
+        scale: [0.35, 0.55], // Medium paddles
+        duration: [12, 16], // Medium speed
+        opacity: [0.5, 0.7], // Medium opacity
+        zIndex: 20
+      },
+      { 
+        name: 'front',
+        count: 20,
+        scale: [0.4, 0.6], // Larger paddles
+        duration: [8, 12], // Faster
+        opacity: [0.7, 0.9], // More opaque
+        zIndex: 30
+      }
+    ];
 
-    // Track mouse position and paddle velocities
+    interface PaddleElement extends HTMLDivElement {
+      layerSpeed: number;
+      layerScale: number;
+    }
+
+    const paddleElements: PaddleElement[] = [];
     const paddleVelocities = new Map<
-      HTMLDivElement,
+      PaddleElement,
       { vx: number; vy: number }
     >();
 
@@ -28,60 +59,58 @@ export default function FallingPaddles() {
     };
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Create paddles
-    for (let i = 0; i < paddleCount; i++) {
-      const paddleWrapper = document.createElement("div");
-      paddleWrapper.className = "absolute";
+    // Create paddles for each layer
+    layers.forEach((layer) => {
+      for (let i = 0; i < layer.count; i++) {
+        const paddleWrapper = document.createElement("div") as PaddleElement;
+        paddleWrapper.className = "absolute";
+        paddleWrapper.style.zIndex = layer.zIndex.toString();
 
-      // Smaller paddles for more realistic size
-      const scale = gsap.utils.random(0.15, 0.6);
-      const width = 50 * scale;
-      const height = 60 * scale;
+        // Use layer-specific scale
+        const scale = gsap.utils.random(layer.scale[0], layer.scale[1]);
+        const width = 50 * scale;
+        const height = 60 * scale;
 
-      paddleWrapper.style.width = `${width}px`;
-      paddleWrapper.style.height = `${height}px`;
-      paddleWrapper.style.left = `${gsap.utils.random(-10, 110)}%`;
-      paddleWrapper.style.top = `-${height + gsap.utils.random(0, 1000)}px`;
+        paddleWrapper.style.width = `${width}px`;
+        paddleWrapper.style.height = `${height}px`;
+        paddleWrapper.style.left = `${gsap.utils.random(-10, 110)}%`;
+        paddleWrapper.style.top = `-${height + gsap.utils.random(0, 1000)}px`;
 
-      // Create image element with random paddle from 1-43
-      const paddleNum = Math.floor(gsap.utils.random(1, totalPaddles + 1));
-      const img = document.createElement("img");
-      img.src = `/paddles/paddle${paddleNum}.png`;
-      img.alt = "paddle";
-      img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "contain";
-      img.style.opacity = `${gsap.utils.random(0.5, 0.85)}`;
+        // Create image element with random paddle
+        const paddleNum = Math.floor(gsap.utils.random(1, totalPaddles + 1));
+        const img = document.createElement("img");
+        img.src = `/paddles/paddle${paddleNum}.png`;
+        img.alt = "paddle";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "contain";
+        img.style.opacity = `${gsap.utils.random(layer.opacity[0], layer.opacity[1])}`;
 
-      paddleWrapper.appendChild(img);
-      container.appendChild(paddleWrapper);
-      paddleElements.push(paddleWrapper);
+        paddleWrapper.appendChild(img);
+        container.appendChild(paddleWrapper);
+        paddleElements.push(paddleWrapper);
 
-      // Initialize velocity for each paddle
-      paddleVelocities.set(paddleWrapper, { vx: 0, vy: 0 });
-    }
+        // Initialize velocity for each paddle
+        paddleVelocities.set(paddleWrapper, { vx: 0, vy: 0 });
+        
+        // Store layer info on the paddle for later use
+        paddleWrapper.layerSpeed = gsap.utils.random(layer.duration[0], layer.duration[1]);
+        paddleWrapper.layerScale = scale;
+      }
+    });
 
     // Animate paddles with wind and natural motion
-    paddleElements.forEach((paddle, index) => {
-      // Varied speeds - some slow, some medium, some fast
-      const speedType = gsap.utils.random(0, 1);
-      let duration;
-      if (speedType < 0.3) {
-        duration = gsap.utils.random(12, 16); // Slow paddles
-      } else if (speedType < 0.7) {
-        duration = gsap.utils.random(8, 12); // Medium paddles
-      } else {
-        duration = gsap.utils.random(5, 8); // Fast paddles
-      }
+    paddleElements.forEach((paddle) => {
+      // Use the stored layer speed
+      const duration = paddle.layerSpeed;
+      const scale = paddle.layerScale;
 
       const delay = gsap.utils.random(0, 8);
 
       // Randomly decide wind direction - some go left, some go right
       const windDirection = Math.random() > 0.5 ? 1 : -1; // 1 = right, -1 = left
-      const horizontalFlow = gsap.utils.random(80, 200) * windDirection;
-
-      // Store initial position
-      const initialLeft = gsap.utils.random(-10, 110);
+      // Adjust horizontal flow based on layer speed (faster = more horizontal movement)
+      const horizontalFlow = gsap.utils.random(80, 200) * windDirection * (1 + (1 - scale));
 
       // Create timeline for complex wind-affected fall
       const tl = gsap.timeline({
@@ -186,8 +215,9 @@ export default function FallingPaddles() {
         const dy = paddleY - mousePos.current.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Wind effect radius
-        const windRadius = 150;
+        // Wind effect radius - adjust based on paddle layer (closer = more influence)
+        const scale = (paddle as PaddleElement).layerScale || 0.5;
+        const windRadius = 150 * (1 + scale); // Closer paddles get more wind influence
 
         // Only apply horizontal force when mouse is near
         if (distance < windRadius && distance > 10) {
