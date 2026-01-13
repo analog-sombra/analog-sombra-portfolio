@@ -219,44 +219,41 @@ const Home = () => {
         <div className="border-2 rounded-xl border-[#72906E] p-2 h-fit">
           <p className="text-xl text-[#E05735] font-extrabold mb-2">Setting</p>
 
-          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
-            <label className="relative inline-block w-9 h-5 cursor-pointer">
-              <input
-                type="checkbox"
-                className="opacity-0 w-0 h-0 peer"
-                checked={showFluteComponent}
-                onChange={toggleFluteComponent}
-              />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
-            </label>
-            <p className="text-[#373529] text-sm font-semibold">Music</p>
-          </div>
+          <button
+            onClick={toggleFluteComponent}
+            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-300 mb-2 ${
+              showFluteComponent
+                ? "bg-[#E05735] text-white shadow-md"
+                : "bg-[#f3dcb4] text-[#373529] hover:bg-[#e8d0a0]"
+            }`}
+          >
+            Music
+            {/* {showFluteComponent && "♪"} */}
+          </button>
 
-          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
-            <label className="relative inline-block w-9 h-5 cursor-pointer">
-              <input
-                type="checkbox"
-                className="opacity-0 w-0 h-0 peer"
-                checked={isRainOn}
-                onChange={toggleRain}
-              />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
-            </label>
-            <p className="text-[#373529] text-sm font-semibold">Rain</p>
-          </div>
+          <button
+            onClick={toggleRain}
+            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-300 mb-2 ${
+              isRainOn
+                ? "bg-[#E05735] text-white shadow-md"
+                : "bg-[#f3dcb4] text-[#373529] hover:bg-[#e8d0a0]"
+            }`}
+          >
+            Rain
+            {/* {isRainOn && "☔"} */}
+          </button>
 
-          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
-            <label className="relative inline-block w-9 h-5 cursor-pointer">
-              <input
-                type="checkbox"
-                className="opacity-0 w-0 h-0 peer"
-                checked={isDrawOn}
-                onChange={toggleDraw}
-              />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
-            </label>
-            <p className="text-[#373529] text-sm font-semibold">Draw</p>
-          </div>
+          <button
+            onClick={toggleDraw}
+            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-300 mb-2 ${
+              isDrawOn
+                ? "bg-[#E05735] text-white shadow-md"
+                : "bg-[#f3dcb4] text-[#373529] hover:bg-[#e8d0a0]"
+            }`}
+          >
+            Draw
+            {/* {isDrawOn && "✏️"} */}
+          </button>
         </div>
       </div>
     </div>

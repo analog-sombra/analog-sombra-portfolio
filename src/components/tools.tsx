@@ -148,52 +148,53 @@ const Tools = () => {
   ];
 
   return (
-    <div className="w-6xl mx-auto space-y-8">
-      {/* Header Section with Stats */}
-      <div className="border-2 rounded-xl border-[#72906E] p-4">
-        <p className="text-xl text-[#E1504B] font-bold">
-          Skills & Technologies
-        </p>
-        <p className="text-[#373529] text-base font-medium">
-          I work with a diverse set of modern technologies across the full
-          stack. Here&apos;s an overview of my technical expertise and the tools
-          I use to build Web as well as Mobile applications.
-        </p>
-      </div>
-
-      <div>
-        <p className="text-xl text-[#E1504B] font-bold mb-2">
-          Frontend Development
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {frontendTools.map((tool) => (
-            <ToolCard
-              key={tool.name}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-            />
-          ))}
+    <>
+      <div className="w-6xl mx-auto space-y-8">
+        {/* Header Section with Stats */}
+        <div className="border-2 rounded-xl border-[#72906E] p-4">
+          <p className="text-xl text-[#E1504B] font-bold">
+            Skills & Technologies
+          </p>
+          <p className="text-[#373529] text-base font-medium">
+            I work with a diverse set of modern technologies across the full
+            stack. Here&apos;s an overview of my technical expertise and the
+            tools I use to build Web as well as Mobile applications.
+          </p>
         </div>
-      </div>
 
-      <div>
-        <p className="text-xl text-[#E1504B] font-bold mb-2">
-          Backend Development
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {BackendTools.map((tool) => (
-            <ToolCard
-              key={tool.name}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-            />
-          ))}
+        <div>
+          <p className="text-xl text-[#E1504B] font-bold mb-2">
+            Frontend Development
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {frontendTools.map((tool) => (
+              <ToolCard
+                key={tool.name}
+                name={tool.name}
+                icon={tool.icon}
+                description={tool.description}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* <div>
+        <div>
+          <p className="text-xl text-[#E1504B] font-bold mb-2">
+            Backend Development
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {BackendTools.map((tool) => (
+              <ToolCard
+                key={tool.name}
+                name={tool.name}
+                icon={tool.icon}
+                description={tool.description}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* <div>
         <p className="text-xl text-[#E1504B] font-bold mb-2">Cloud & DevOps</p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Cloud_DevOps_Tools.map((tool) => (
@@ -207,20 +208,25 @@ const Tools = () => {
         </div>
       </div> */}
 
-      <div>
-        <p className="text-xl text-[#E1504B] font-bold mb-2">Other Tools</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {tools.map((tool) => (
-            <ToolCard
-              key={tool.name}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-            />
-          ))}
+        <div>
+          <p className="text-xl text-[#E1504B] font-bold mb-2">Other Tools</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {tools.map((tool) => (
+              <ToolCard
+                key={tool.name}
+                name={tool.name}
+                icon={tool.icon}
+                description={tool.description}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <div className="h-80"></div>
+      <p className="text-center">-----------\(^-^)/------------</p>
+      <p className="text-center">Hope You Enjoyed</p>
+      <p className="text-center pb-4">-------------------------------</p>
+    </>
   );
 };
 export default Tools;

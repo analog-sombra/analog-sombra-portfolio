@@ -169,120 +169,128 @@ const Projects = () => {
   };
 
   return (
-    <div className="w-6xl mx-auto space-y-6">
-      {/* Header Section */}
-      <div className="border-2 rounded-xl border-[#72906E] p-4">
-        <p className="text-xl text-[#E1504B] font-bold mb-3">🚀 My Projects</p>
-        <p className="text-[#373529] text-base font-medium">
-          A collection of projects I&apos;ve worked on. From web applications to
-          mobile apps, games, and developer tools - each project represents a
-          unique challenge and learning experience.
-        </p>
-      </div>
+    <>
+      <div className="w-6xl mx-auto space-y-6">
+        {/* Header Section */}
+        <div className="border-2 rounded-xl border-[#72906E] p-4">
+          <p className="text-xl text-[#E1504B] font-bold mb-3">
+            🚀 My Projects
+          </p>
+          <p className="text-[#373529] text-base font-medium">
+            A collection of projects I&apos;ve worked on. From web applications
+            to mobile apps, games, and developer tools - each project represents
+            a unique challenge and learning experience.
+          </p>
+        </div>
 
-      {/* Filter Section */}
-      <div>
-        <p className="text-lg text-[#E1504B] font-bold mb-3">
-          Filter by Category
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <button
-              key={filter.id}
+        {/* Filter Section */}
+        <div>
+          <p className="text-lg text-[#E1504B] font-bold mb-3">
+            Filter by Category
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {filters.map((filter, index) => (
+              <button
+                key={filter.id}
+                ref={(el) => {
+                  filterRefs.current[index] = el;
+                }}
+                onClick={() => handleFilterChange(filter.id, index)}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                  activeFilter === filter.id
+                    ? "bg-[#E1504B] text-[#f3dcb4] border-2 border-[#E1504B]"
+                    : "bg-transparent text-[#373529] border-2 border-[#72906E] hover:bg-[#f3dcb4]"
+                }`}
+              >
+                {/* {filter.emoji} */}
+                {filter.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-3 text-sm text-[#373529] opacity-70">
+            Showing {filteredProjects.length}{" "}
+            {filteredProjects.length === 1 ? "project" : "projects"}
+          </div>
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredProjects.map((project, index) => (
+            <div
+              key={project.id}
               ref={(el) => {
-                filterRefs.current[index] = el;
+                projectsRef.current[index] = el;
               }}
-              onClick={() => handleFilterChange(filter.id, index)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                activeFilter === filter.id
-                  ? "bg-[#E1504B] text-[#f3dcb4] border-2 border-[#E1504B]"
-                  : "bg-transparent text-[#373529] border-2 border-[#72906E] hover:bg-[#f3dcb4]"
-              }`}
+              onMouseEnter={() => handleProjectHover(index, true)}
+              onMouseLeave={() => handleProjectHover(index, false)}
+              className="border-2 rounded-xl border-[#72906E] overflow-hidden cursor-pointer"
             >
-              {/* {filter.emoji} */}
-              {filter.label}
-            </button>
+              {/* Project Image */}
+              <div className="relative h-48 bg-[#f3dcb4] overflow-hidden">
+                <div className="project-img absolute inset-0 flex items-center justify-center">
+                  <p className="text-6xl opacity-20">
+                    {filters.find((f) => f.id === project.category)?.emoji}
+                  </p>
+                </div>
+              </div>
+
+              {/* Project Content */}
+              <div className="project-content p-4">
+                <h3 className="text-lg text-[#E1504B] font-bold mb-2">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-[#373529] opacity-70 mb-3">
+                  {project.description}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {project.tags.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-1 bg-[#f3dcb4] text-[#373529] text-xs font-semibold rounded"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Links */}
+                <div className="flex gap-2">
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full px-3 py-2 bg-[#72906E] text-[#f3dcb4] text-xs font-semibold rounded text-center hover:bg-[#E1504B] transition-colors duration-300"
+                    >
+                      GitHub
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
-        <div className="mt-3 text-sm text-[#373529] opacity-70">
-          Showing {filteredProjects.length}{" "}
-          {filteredProjects.length === 1 ? "project" : "projects"}
-        </div>
-      </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredProjects.map((project, index) => (
-          <div
-            key={project.id}
-            ref={(el) => {
-              projectsRef.current[index] = el;
-            }}
-            onMouseEnter={() => handleProjectHover(index, true)}
-            onMouseLeave={() => handleProjectHover(index, false)}
-            className="border-2 rounded-xl border-[#72906E] overflow-hidden cursor-pointer"
-          >
-            {/* Project Image */}
-            <div className="relative h-48 bg-[#f3dcb4] overflow-hidden">
-              <div className="project-img absolute inset-0 flex items-center justify-center">
-                <p className="text-6xl opacity-20">
-                  {filters.find((f) => f.id === project.category)?.emoji}
-                </p>
-              </div>
-            </div>
-
-            {/* Project Content */}
-            <div className="project-content p-4">
-              <h3 className="text-lg text-[#E1504B] font-bold mb-2">
-                {project.title}
-              </h3>
-              <p className="text-sm text-[#373529] opacity-70 mb-3">
-                {project.description}
-              </p>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {project.tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-1 bg-[#f3dcb4] text-[#373529] text-xs font-semibold rounded"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Links */}
-              <div className="flex gap-2">
-                {project.github && (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full px-3 py-2 bg-[#72906E] text-[#f3dcb4] text-xs font-semibold rounded text-center hover:bg-[#E1504B] transition-colors duration-300"
-                  >
-                    GitHub
-                  </a>
-                )}
-              </div>
-            </div>
+        {/* Empty State */}
+        {filteredProjects.length === 0 && (
+          <div className="border-2 rounded-xl border-[#72906E] p-8 text-center">
+            <p className="text-6xl mb-4">🔍</p>
+            <p className="text-xl text-[#E1504B] font-bold mb-2">
+              No projects found
+            </p>
+            <p className="text-[#373529] opacity-70">
+              Try selecting a different category
+            </p>
           </div>
-        ))}
+        )}
       </div>
-
-      {/* Empty State */}
-      {filteredProjects.length === 0 && (
-        <div className="border-2 rounded-xl border-[#72906E] p-8 text-center">
-          <p className="text-6xl mb-4">🔍</p>
-          <p className="text-xl text-[#E1504B] font-bold mb-2">
-            No projects found
-          </p>
-          <p className="text-[#373529] opacity-70">
-            Try selecting a different category
-          </p>
-        </div>
-      )}
-    </div>
+      <div className="h-80"></div>
+      <p className="text-center">-----------\(^-^)/------------</p>
+      <p className="text-center">Scroll Down For Next Section</p>
+      <p className="text-center pb-4">-------------------------------</p>
+    </>
   );
 };
 export default Projects;
