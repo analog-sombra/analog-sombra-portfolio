@@ -227,7 +227,7 @@ const Home = () => {
                 checked={showFluteComponent}
                 onChange={toggleFluteComponent}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
             <p className="text-[#373529] text-sm font-semibold">Music</p>
           </div>
@@ -240,7 +240,7 @@ const Home = () => {
                 checked={isRainOn}
                 onChange={toggleRain}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
             <p className="text-[#373529] text-sm font-semibold">Rain</p>
           </div>
@@ -253,7 +253,7 @@ const Home = () => {
                 checked={isDrawOn}
                 onChange={toggleDraw}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#72906E] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
             <p className="text-[#373529] text-sm font-semibold">Draw</p>
           </div>

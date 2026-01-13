@@ -172,17 +172,19 @@ const Projects = () => {
     <div className="w-6xl mx-auto space-y-6">
       {/* Header Section */}
       <div className="border-2 rounded-xl border-[#72906E] p-4">
-        <p className="text-xl text-[#E1504B] font-bold mb-3">
-          🚀 My Projects
-        </p>
+        <p className="text-xl text-[#E1504B] font-bold mb-3">🚀 My Projects</p>
         <p className="text-[#373529] text-base font-medium">
-          A collection of projects I&apos;ve worked on. From web applications to mobile apps, games, and developer tools - each project represents a unique challenge and learning experience.
+          A collection of projects I&apos;ve worked on. From web applications to
+          mobile apps, games, and developer tools - each project represents a
+          unique challenge and learning experience.
         </p>
       </div>
 
       {/* Filter Section */}
       <div>
-        <p className="text-lg text-[#E1504B] font-bold mb-3">Filter by Category</p>
+        <p className="text-lg text-[#E1504B] font-bold mb-3">
+          Filter by Category
+        </p>
         <div className="flex flex-wrap gap-2">
           {filters.map((filter, index) => (
             <button
@@ -197,12 +199,14 @@ const Projects = () => {
                   : "bg-transparent text-[#373529] border-2 border-[#72906E] hover:bg-[#f3dcb4]"
               }`}
             >
-              {filter.emoji} {filter.label}
+              {/* {filter.emoji} */}
+              {filter.label}
             </button>
           ))}
         </div>
         <div className="mt-3 text-sm text-[#373529] opacity-70">
-          Showing {filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}
+          Showing {filteredProjects.length}{" "}
+          {filteredProjects.length === 1 ? "project" : "projects"}
         </div>
       </div>
 
