@@ -2,6 +2,7 @@
 import NavBar from "@/components/navbar";
 import About from "@/components/about";
 import Home from "@/components/home";
+import Tools from "@/components/tools";
 
 export default function Page() {
   
@@ -11,6 +12,7 @@ export default function Page() {
       <NavBar />
       <Home />
       {/* <About /> */}
+      <Tools />
 
       
       
