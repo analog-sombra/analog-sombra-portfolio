@@ -6,8 +6,14 @@ import gsap from "gsap";
 import { useSettings } from "../context/SettingsContext";
 
 const Home = () => {
-  const { showFluteComponent, isRainOn, isDrawOn, toggleFluteComponent, toggleRain, toggleDraw } =
-    useSettings();
+  const {
+    showFluteComponent,
+    isRainOn,
+    isDrawOn,
+    toggleFluteComponent,
+    toggleRain,
+    toggleDraw,
+  } = useSettings();
   const readMoreRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<(HTMLParagraphElement | null)[]>([]);
   const dot1Ref = useRef<HTMLSpanElement>(null);
@@ -45,29 +51,38 @@ const Home = () => {
   }, []);
 
   const handleLinkHover = (index: number, isHovering: boolean) => {
-    linksRef.current.forEach((link, i) => {
-      if (link) {
+    const link = linksRef.current[index];
+    if (link) {
+      const box = link.querySelector(".hover-box") as HTMLElement;
+      if (box) {
         if (isHovering) {
+          // Slide in from left
+          gsap.fromTo(
+            box,
+            { x: "-100%", opacity: 0 },
+            { x: "0%", opacity: 1, duration: 0.3, ease: "power2.out" }
+          );
           gsap.to(link, {
-            opacity: i === index ? 1 : 0.25,
-            scale: i === index ? 1.15 : 0.92,
-            x: i === index ? 8 : 0,
-            color: i === index ? "#E05735" : "#373529",
+            color: "#E05735",
             duration: 0.2,
-            ease: "power3.out",
+            ease: "power2.out",
           });
         } else {
+          // Slide out to right
+          gsap.to(box, {
+            x: "100%",
+            opacity: 0,
+            duration: 0.3,
+            ease: "power2.in",
+          });
           gsap.to(link, {
-            opacity: 1,
-            scale: 1,
-            x: 0,
             color: "#373529",
             duration: 0.2,
-            ease: "power3.out",
+            ease: "power2.out",
           });
         }
       }
-    });
+    }
   };
 
   return (
@@ -130,7 +145,7 @@ const Home = () => {
 
       <div className="flex flex-col gap-2">
         <div className="border-2 rounded-xl border-[#72906E] p-2 h-fit">
-          <p className="text-xl text-[#E05735] font-extrabold mb-2">Links</p>
+          <p className="text-xl text-[#E05735] font-extrabold">Links</p>
 
           <p
             ref={(el) => {
@@ -138,9 +153,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(0, true)}
             onMouseLeave={() => handleLinkHover(0, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - Email
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">Email</span>
           </p>
           <p
             ref={(el) => {
@@ -148,9 +164,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(1, true)}
             onMouseLeave={() => handleLinkHover(1, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - GitHub
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">GitHub</span>
           </p>
           <p
             ref={(el) => {
@@ -158,9 +175,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(2, true)}
             onMouseLeave={() => handleLinkHover(2, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - Discord
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">Discord</span>
           </p>
           <p
             ref={(el) => {
@@ -168,9 +186,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(3, true)}
             onMouseLeave={() => handleLinkHover(3, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - Instagram
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">Instagram</span>
           </p>
           <p
             ref={(el) => {
@@ -178,9 +197,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(4, true)}
             onMouseLeave={() => handleLinkHover(4, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - YouTube
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">YouTube</span>
           </p>
           <p
             ref={(el) => {
@@ -188,9 +208,10 @@ const Home = () => {
             }}
             onMouseEnter={() => handleLinkHover(5, true)}
             onMouseLeave={() => handleLinkHover(5, false)}
-            className="text-[#373529] text-lg font-semibold mb-2 cursor-pointer transition-all"
+            className="text-[#373529] text-sm font-semibold px-2 mb-2 cursor-pointer relative overflow-hidden"
           >
-            - PlayStore
+            <span className="hover-box absolute inset-0 bg-[#f3dcb4] opacity-0 rounded"></span>
+            <span className="relative z-10">PlayStore</span>
           </p>
         </div>
 
@@ -198,43 +219,43 @@ const Home = () => {
         <div className="border-2 rounded-xl border-[#72906E] p-2 h-fit">
           <p className="text-xl text-[#E05735] font-extrabold mb-2">Setting</p>
 
-          <div className="flex gap-3 items-center mb-3">
-            <label className="relative inline-block w-11 h-6">
+          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
+            <label className="relative inline-block w-9 h-5 cursor-pointer">
               <input
                 type="checkbox"
                 className="opacity-0 w-0 h-0 peer"
                 checked={showFluteComponent}
                 onChange={toggleFluteComponent}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#C4B5A0] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-4.5 before:w-4.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#72906E] peer-checked:before:translate-x-5 peer-focus:shadow-[0_0_1px_#72906E]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
-            <p className="text-[#373529] text-lg font-medium">Music</p>
+            <p className="text-[#373529] text-sm font-semibold">Music</p>
           </div>
 
-          <div className="flex gap-3 items-center mb-3">
-            <label className="relative inline-block w-11 h-6">
+          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
+            <label className="relative inline-block w-9 h-5 cursor-pointer">
               <input
                 type="checkbox"
                 className="opacity-0 w-0 h-0 peer"
                 checked={isRainOn}
                 onChange={toggleRain}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#C4B5A0] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-4.5 before:w-4.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#72906E] peer-checked:before:translate-x-5 peer-focus:shadow-[0_0_1px_#72906E]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
-            <p className="text-[#373529] text-lg font-medium">Rain</p>
+            <p className="text-[#373529] text-sm font-semibold">Rain</p>
           </div>
 
-          <div className="flex gap-3 items-center mb-2">
-            <label className="relative inline-block w-11 h-6">
-              <input 
-                type="checkbox" 
-                className="opacity-0 w-0 h-0 peer" 
+          <div className="flex gap-3 items-center mb-2 px-2 py-1 rounded cursor-pointer hover:bg-[#f3dcb4] transition-colors duration-300">
+            <label className="relative inline-block w-9 h-5 cursor-pointer">
+              <input
+                type="checkbox"
+                className="opacity-0 w-0 h-0 peer"
                 checked={isDrawOn}
                 onChange={toggleDraw}
               />
-              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#C4B5A0] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-4.5 before:w-4.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#72906E] peer-checked:before:translate-x-5 peer-focus:shadow-[0_0_1px_#72906E]"></span>
+              <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-[#373529] transition-all duration-400 rounded-full before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-0.75 before:bottom-0.75 before:bg-white before:transition-all before:duration-400 before:rounded-full peer-checked:bg-[#E1504B] peer-checked:before:translate-x-4 peer-focus:shadow-[0_0_1px_#E1504B]"></span>
             </label>
-            <p className="text-[#373529] text-lg font-medium">Draw</p>
+            <p className="text-[#373529] text-sm font-semibold">Draw</p>
           </div>
         </div>
       </div>
