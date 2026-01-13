@@ -193,7 +193,7 @@ const Tools = () => {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <p className="text-xl text-[#E1504B] font-bold mb-2">Cloud & DevOps</p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Cloud_DevOps_Tools.map((tool) => (
@@ -205,7 +205,7 @@ const Tools = () => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div>
         <p className="text-xl text-[#E1504B] font-bold mb-2">Other Tools</p>

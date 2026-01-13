@@ -3,6 +3,7 @@ import NavBar from "@/components/navbar";
 import About from "@/components/about";
 import Home from "@/components/home";
 import Tools from "@/components/tools";
+import Projects from "@/components/project";
 
 export default function Page() {
   
@@ -13,6 +14,7 @@ export default function Page() {
       <Home />
       <About />
       <Tools />
+      <Projects />
 
       
       
