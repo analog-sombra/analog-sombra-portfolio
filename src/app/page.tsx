@@ -113,10 +113,10 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full bg-[#FDF2D8] min-h-screen font-mono">
+    <div className="w-full bg-[#FDF2D8] min-h-screen font-mono overflow-x-hidden">
       <NavBar activePage={activePage} onNavigate={handlePageChange} />
       
-      <div ref={contentRef} className="w-full">
+      <div ref={contentRef} className="w-full overflow-x-hidden">
         {renderPage()}
       </div>
 
